@@ -1,4 +1,6 @@
 clear;clc;close all;warning off;
+%% 计时开始
+SimulateInitT = clock;
 %% 微循环模型程序主函数
 %%%% 运行宏定义 %%%%
 Macro   % 定义宏定义的文件
@@ -27,6 +29,8 @@ switch RunType
       STRUCT_ADAP_FUNC(NetTypeID,DataArray,Boundary,FuncPara,DatMatrix);
 end
 
+%% 计时结束
+disp(['toc：总共运行时间：', num2str(etime(clock, SimulateInitT))]);
 % 提醒程序运行结束
 load chirp
 sound(y,Fs)

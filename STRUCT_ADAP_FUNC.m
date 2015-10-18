@@ -1,13 +1,12 @@
 function [NewAdapCoeff,ObjValue,OptDiam,OptWallTh,Sm,Sc] = STRUCT_ADAP_FUNC(NetTypeID,DataArray,Boundary,FuncPara,DatMatrix)
 global WITH_WALL WITHOUT_WALL WITH_WALL_Cx WITHOUT_WALL_Cx WITH_WALL_Cx_PULSE
-global PSO DOWNHILL GLOBAL_SEARCH
+global PSO DOWNHILL GLOBAL_SEARCH YSPSO
 global NOT_OPT_PARA OPT_PARA
 global Net_546_ID Net_546_Meas_ID Egg_818_ID Net_122_ID Net_389_ID Net_913_ID Egg_CAM_ID Sub_CAM_ID Egg_636_ID
 
 %% 1. 设置自适应方法、优化方法、优化类型
 AdapType=WITH_WALL;
-%%OptMethod=DOWNHILL;
-OptMethod=PSO;
+OptMethod=DOWNHILL;
 OptType=OPT_PARA;
 
 %% 2. 数据预处理
@@ -80,11 +79,33 @@ if OptType==OPT_PARA
         InitSwarm(i,:)=AdapCoeff.*(rand(1,length(AdapCoeff))+0.5);
       end
       options = optimoptions('particleswarm','SwarmSize',SwarmSize,'InitialSwarm',InitSwarm,'MaxIter',1000);
-      %  'OutputFcns',@OptOutFunc,'PlotFcns',@OptPlotFunc,
+      %  'OutputFcns',@OptOutFunc,'PlotFcns',@OptPlotFunc
       lb=[];
       ub=[];
       [X,FVAL,EXITFLAG,OUTPUT]= particleswarm(@(x) AdapObjFunc(x,NetTypeID,AdapType,HdOrder,...
         AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray),length(AdapCoeff),lb,ub,options);
+      NewAdapCoeff=X;
+%   EXITFLAG 
+%   1   Relative change in the objective value over the last options.StallIterLimit iterations is less than options.TolFun.
+%   0   Number of iterations exceeded options.MaxIter.
+%   -1  Iterations stopped by output function or plot function.
+%   -2  Bounds are inconsistent: for some i, lb(i) > ub(i).
+%   -3  Best objective function value is at or below options.ObjectiveLimit.
+%   -4  Best objective function value did not change within options.StallTimeLimit seconds.
+%   -5  Run time exceeded options.MaxTime seconds.
+      formatstring = 'particleswarm reached the value %f using %d function evaluations, after %d iterations with ExitFlag %d and algorithm stop reason is %s.\n';
+      fprintf(formatstring, FVAL, OUTPUT.funccount, OUTPUT.iterations, EXITFLAG, OUTPUT.message);
+    case YSPSO
+        SwarmSize = 10;
+        InitSwarm=zeros(SwarmSize,length(AdapCoeff));
+        for i=1:SwarmSize
+          InitSwarm(i,:)=AdapCoeff.*(rand(1,length(AdapCoeff))+0.5);
+        end
+        c1 = 2.05;
+        c2 = 2.05;
+        AdaptTimes = 100;
+        [X,FVAL] = YasuoPSO(@(x) AdapObjFunc(x,NetTypeID,AdapType,HdOrder,...
+          AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray),SwarmSize,InitSwarm,c1,c2,AdaptTimes,length(AdapCoeff));
       NewAdapCoeff=X;
     case DOWNHILL
       % Simplex Downhill方法
@@ -100,8 +121,8 @@ if OptType==OPT_PARA
 %   -3  Best objective function value is at or below options.ObjectiveLimit.
 %   -4  Best objective function value did not change within options.StallTimeLimit seconds.
 %   -5  Run time exceeded options.MaxTime seconds.
-      formatstring = 'particleswarm reached the value %f using %d function evaluations, after %d iterations with ExitFlag %d and algorithm stop reason is %s.\n';
-      fprintf(formatstring, FVAL, OUTPUT.funccount, OUTPUT.iterations, EXITFLAG, OUTPUT.message);
+      formatstring = 'Nelder-Mead reached the value %f using %d function evaluations, after %d iterations with ExitFlag %d and algorithm stop reason is %s.\n';
+      fprintf(formatstring, FVAL, OUTPUT.funcCount, OUTPUT.iterations, EXITFLAG, OUTPUT.message);
     case GLOBAL_SEARCH
       % TODO
   end
