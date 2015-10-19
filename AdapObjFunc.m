@@ -105,7 +105,7 @@ while Loop2_Cnt<Loop2_Adap_Limit % 循环2，自适应循环迭代
     % 逆流处理模块
     [InvIndex,FromNew,ToNew,MeanFlowNew,DeltaPNew]=AdjustFlowDir(FromNew,ToNew,MeanFlow,DeltaP,Eju);
     % 调整Hd计算顺序
-    [Porder,Norder,Eju]=HdCalOrder(Boundary,From,To,FromNew,ToNew,Porder,Norder,2,Eju);
+    [Porder,Norder,Eju]=HdCalOrder(Boundary,From,To,FromNew,ToNew,Porder,Norder,1,Eju);
     if Eju==1
       errorFlag=1;
       break;
