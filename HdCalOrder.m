@@ -122,6 +122,9 @@ if Eju==0 %正常情况
       Njudge=Njudge-1;
       for i=1:VesNum
         j=N(i);
+        if j==0
+            continue;
+        end
         ConvergeIndex=find(To2==From2(j));   %判断汇聚血管
         if length(ConvergeIndex)==2         
           if Nmarker(ConvergeIndex(1))==0||Nmarker(ConvergeIndex(2))==0
