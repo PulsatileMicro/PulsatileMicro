@@ -6,7 +6,7 @@ global Net_546_ID Net_546_Meas_ID Egg_818_ID Net_122_ID Net_389_ID Net_913_ID Eg
 
 %% 1. 设置自适应方法、优化方法、优化类型
 AdapType=WITH_WALL;
-OptMethod=PSO;
+OptMethod=YSPSO;
 OptType=OPT_PARA;
 
 %% 2. 数据预处理
@@ -122,16 +122,45 @@ if OptType==OPT_PARA
       formatstring = 'particleswarm reached the value %f using %d function evaluations, after %d iterations with ExitFlag %d and algorithm stop reason is %s.\n';
       fprintf(formatstring, FVAL, OUTPUT.funccount, OUTPUT.iterations, EXITFLAG, OUTPUT.message);
     case YSPSO
-        SwarmSize = 1;
+        SwarmSize=10;
         InitSwarm=zeros(SwarmSize,length(AdapCoeff));
-        for i=1:SwarmSize
-          InitSwarm(i,:)=AdapCoeff.*(rand(1,length(AdapCoeff))+0.5);
-        end
-        c1 = 2.8;
-        c2 = 1.3;
-        AdaptTimes = 1;
+      
+      %  'OutputFcns',@OptOutFunc,'PlotFcns',@OptPlotFunc
+%         kc=AdapCoeff(1); 1.66±5
+%         kmd=AdapCoeff(2); 0.955±5
+%         kmg=AdapCoeff(3); -0.374±5
+%         ksd=AdapCoeff(4); 3.077±5
+%         ksg=AdapCoeff(5); 0.0177±5
+%         kwt=AdapCoeff(6); 0.114±5
+%         kwo=AdapCoeff(7); 0.609±5
+%         tauref=AdapCoeff(8); 0.5598±80%
+%         J0=AdapCoeff(9); 6618±20%
+%         Lref=AdapCoeff(10); 14292±20%
+%         Oref=AdapCoeff(11); 32050±80%
+%         wref=AdapCoeff(12); 0.804±80%
+        kcScale=linspace(1.66-5,1.66+5,SwarmSize);
+        kmdScale=linspace(0.955-5,0.955+5,SwarmSize);
+        kmgScale=linspace(-0.374-5,-0.374+5,SwarmSize);
+        ksdScale=linspace(3.077-5,3.077+5,SwarmSize);
+        ksgScale=linspace(0.0177-5,0.0177+5,SwarmSize);
+        kwtScale=linspace(0.114-5,0.114+5,SwarmSize);
+        kwoScale=linspace(0.609-5,0.609+5,SwarmSize);
+        taurefScale=linspace(0.5598*0.2,0.5598*1.8,SwarmSize);
+        J0Scale=linspace(6618*0.8,6618*1.2,SwarmSize);
+        LrefScale=linspace(14292*0.8,14292*1.2,SwarmSize);
+        OrefScale=linspace(32050*0.2,32050*1.8,SwarmSize);
+        wrefScale=linspace(0.804*0.2,0.804*1.8,SwarmSize);
+      for i=1:SwarmSize
+ %       InitSwarm(i,:)=AdapCoeff.*(rand(1,length(AdapCoeff))+0.5);
+        InitSwarm(i,:)=[kcScale(1,i),kmdScale(1,i),kmgScale(1,i),ksdScale(1,i),ksgScale(1,i),kwtScale(1,i),kwoScale(1,i),taurefScale(1,i),J0Scale(1,i),LrefScale(1,i),OrefScale(1,i),wrefScale(1,i)];
+      end
+      lb=[1.66-5,0.955-5,-0.374-5,3.077-5,0.0177-5,0.114-5,0.609-5,0.5598*0.2,6618*0.8,14292*0.8,32050*0.2,0.804*0.2];
+      ub=[1.66+5,0.955+5,-0.374+5,3.077+5,0.0177+5,0.114+5,0.609+5,0.5598*1.8,6618*1.2,14292*1.2,32050*1.8,0.804*1.8];
+        c1 = 2.05;
+        c2 = 2.05;
+        AdaptTimes = 1000;
         [X,FVAL] = YasuoPSO(@(x) AdapObjFunc(x,NetTypeID,AdapType,HdOrder,...
-          AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray),SwarmSize,InitSwarm,c1,c2,AdaptTimes,length(AdapCoeff));
+          AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray),SwarmSize,InitSwarm,c1,c2,AdaptTimes,length(AdapCoeff),lb,ub);
       NewAdapCoeff=X;
     case DOWNHILL
       % Simplex Downhill方法
