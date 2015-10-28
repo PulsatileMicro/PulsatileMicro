@@ -1,4 +1,4 @@
-function [xm,fv] = YasuoPSO(fitness,N,swarms,c1,c2,M,D)
+function [xm,fv] = YasuoPSO(fitness,N,swarms,c1,c2,M,D,lb,ub)
 phi = c1 + c2;
 if phi <= 4
     disp('c1 与 c2 的 和 必 须 大 于 4 ！');
@@ -9,7 +9,7 @@ end
 format long;
 
 %------初始化种群的个体------------
-
+save('AdapCoeff_Wall_res.txt','swarms','-ascii','-v6','-append');
 for i=1:N
     x(i,:) = swarms(i,:);
     for j=1:D
@@ -56,8 +56,9 @@ for t=1:M
         ksi = 2 / abs(2 - phi - sqrt(phi^2 - 4*phi));
         v(i,:) = v(i,:)+c1*rand*(y(i,:)-x(i,:))+c2*rand*(pg-x(i,:));
         v(i,:) = ksi*v(i,:);
-
         x(i,:)=x(i,:)+v(i,:);
+        %%test the lower and uper bounds
+        x(i,:)=arrayfun(@bounds_mutaion,x(i,:),lb,ub);
         pbest=fitness(x(i,:));
         if pbest<p(i)
 
@@ -82,6 +83,15 @@ for t=1:M
 end
 xm = pg';
 fv = pgbesttmp;
+end
 
+function y = bounds_mutaion(xint,lb,ub)
+    if xint<lb
+        y=lb+0.8*rand()*(ub-lb);
 
-
+    elseif xint>ub
+        y=ub-0.8*rand()*(ub-lb);
+    else
+        y = xint;
+    end
+end
