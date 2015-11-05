@@ -1,4 +1,4 @@
-clear;clc;close all;warning off;
+clear;clc;close all;warning off;dbstop if error;
 %% 计时开始
 SimulateInitT = clock;
 %% 微循环模型程序主函数
