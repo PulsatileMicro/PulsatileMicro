@@ -158,7 +158,7 @@ if OptType==OPT_PARA
       ub=[1.66+5,0.955+5,-0.374+5,3.077+5,0.0177+5,0.114+5,0.609+5,0.5598*1.8,6618*1.2,14292*1.2,32050*1.8,0.804*1.8];
         c1 = 2.05;
         c2 = 2.05;
-        AdaptTimes = 1000;
+        AdaptTimes = 200;
         [X,FVAL] = YasuoPSO(@(x) AdapObjFunc(x,NetTypeID,AdapType,HdOrder,...
           AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray),SwarmSize,InitSwarm,c1,c2,AdaptTimes,length(AdapCoeff),lb,ub);
       NewAdapCoeff=X;
