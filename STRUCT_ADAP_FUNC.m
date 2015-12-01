@@ -1,4 +1,4 @@
-function [NewAdapCoeff,ObjValue,OptDiam,OptWallTh,Sm,Sc] = STRUCT_ADAP_FUNC(NetTypeID,DataArray,Boundary,FuncPara,DatMatrix)
+function [NewAdapCoeff,ObjValue,OptDiam,OptWallTh,PO2,MeanP,tau,O,Visc,Sm,Sc] = STRUCT_ADAP_FUNC(NetTypeID,DataArray,Boundary,FuncPara,DatMatrix)
 global WITH_WALL WITHOUT_WALL WITH_WALL_Cx WITHOUT_WALL_Cx WITH_WALL_Cx_PULSE
 global PSO DOWNHILL GLOBAL_SEARCH YSPSO
 global NOT_OPT_PARA OPT_PARA
@@ -158,7 +158,7 @@ if OptType==OPT_PARA
       ub=[1.66+5,0.955+5,-0.374+5,3.077+5,0.0177+5,0.114+5,0.609+5,0.5598*1.8,6618*1.2,14292*1.2,32050*1.8,0.804*1.8];
         c1 = 2.05;
         c2 = 2.05;
-        AdaptTimes = 200;
+        AdaptTimes = 500;
         [X,FVAL] = YasuoPSO(@(x) AdapObjFunc(x,NetTypeID,AdapType,HdOrder,...
           AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray),SwarmSize,InitSwarm,c1,c2,AdaptTimes,length(AdapCoeff),lb,ub);
       NewAdapCoeff=X;
@@ -182,11 +182,11 @@ if OptType==OPT_PARA
       % TODO
   end
   % 使用更新后的系数跑一次
-  [ObjValue,AdapCoeff,OptDiam,OptWallTh,Sm,Sc]=AdapObjFunc(NewAdapCoeff,NetTypeID,AdapType,HdOrder,...
+  [ObjValue,AdapCoeff,OptDiam,OptWallTh,PO2,MeanP,tau,O,Visc,Sm,Sc]=AdapObjFunc(NewAdapCoeff,NetTypeID,AdapType,HdOrder,...
     AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray);
   NewAdapCoeff=AdapCoeff;
 else
-  [ObjValue,AdapCoeff,OptDiam,OptWallTh,Sm,Sc]=AdapObjFunc(AdapCoeff,NetTypeID,AdapType,HdOrder,...
+  [ObjValue,AdapCoeff,OptDiam,OptWallTh,PO2,MeanP,tau,O,Visc,Sm,Sc]=AdapObjFunc(AdapCoeff,NetTypeID,AdapType,HdOrder,...
     AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray);
   NewAdapCoeff=AdapCoeff;
 end

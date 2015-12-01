@@ -25,7 +25,7 @@ switch RunType
   case BOUND_OPT
     [OptBound,InvSeg]=BOUND_OPT_FUNC(NetTypeID,Boundary,DatMatrix);
   case STRUCT_ADAP
-    [AdapCoeff,FVal,OptDiam,OptWallTh,Sm,Sc]=...
+    [AdapCoeff,FVal,OptDiam,OptWallTh,PO2,MeanP,tau,O,Visc,Sm,Sc]=...
       STRUCT_ADAP_FUNC(NetTypeID,DataArray,Boundary,FuncPara,DatMatrix);
 end
 
