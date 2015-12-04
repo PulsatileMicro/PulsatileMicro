@@ -49,16 +49,19 @@ for i=1:(N-1)
 end
 
 %------进入主要循环，按照公式依次迭代------------
-
+vb = (ub-lb).*0.2; %% vmax 设置为问题空间的20%
 for t=1:M
     tic;
     for i=1:N
         ksi = 2 / abs(2 - phi - sqrt(phi^2 - 4*phi));
         v(i,:) = v(i,:)+c1*rand*(y(i,:)-x(i,:))+c2*rand*(pg-x(i,:));
         v(i,:) = ksi*v(i,:);
-        x(i,:)=x(i,:)+v(i,:);
+       %% test v bounds
+        v(i,:)=arrayfun(@v_bounds_mutaion,v(i,:),vb);
+        
         %%test the lower and uper bounds
-        x(i,:)=arrayfun(@bounds_mutaion,x(i,:),lb,ub);
+        x(i,:)=x(i,:)+v(i,:);
+        x(i,:)=arrayfun(@x_bounds_mutaion,x(i,:),lb,ub);
         pbest=fitness(x(i,:));
         if pbest<p(i)
 
@@ -85,12 +88,23 @@ xm = pg';
 fv = pgbesttmp;
 end
 
-function y = bounds_mutaion(xint,lb,ub)
+function y = v_bounds_mutaion(vint, vb)
+    if vint<-vb
+        y=-vb+2*rand()*vb;
+
+    elseif vint>vb
+        y=vb-2*rand()*vb;
+    else
+        y = vint;
+    end
+end
+
+function y = x_bounds_mutaion(xint,lb,ub)
     if xint<lb
-        y=lb+0.8*rand()*(ub-lb);
+        y=lb+0.5*rand()*(ub-lb);
 
     elseif xint>ub
-        y=ub-0.8*rand()*(ub-lb);
+        y=ub-0.5*rand()*(ub-lb);
     else
         y = xint;
     end
