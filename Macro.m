@@ -118,12 +118,18 @@ WITHOUT_WALL=2;       % 不包含血管壁优化
 WITH_WALL_Cx=3;       % 包含血管壁优化，优化Cx参数
 WITHOUT_WALL_Cx=4;    % 不包含血管壁优化，优化Cx参数
 WITH_WALL_Cx_PULSE=5; % 包含血管壁优化，优化Cx参数，脉动情况
+%%%% 结构自适应优化分类: OptCategory
+global PSO SIMPLEX GA
+PSO=1;
+SIMPLEX=2;
+GA=3;
 %%%% 结构自适应优化方法: OptMethod
-global PSO DOWNHILL GLOBAL_SEARCH YSPSO
-PSO=1;              % 粒子群优化方法
+global PSORESV DOWNHILL GLOBAL_SEARCH YSPSO SELPSO
+PSORESV=1;              % Matlab自带粒子群优化方法
 DOWNHILL=2;         % Simplex Downhill方法(matlab fminsearch函数)
 GLOBAL_SEARCH=3;
-YSPSO=4;            
+YSPSO=4;
+SELPSO=5;
 %%%% 优化类型：是否估算系数？:OptType
 global NOT_OPT_PARA OPT_PARA OPT_BOUND_FLOW OPT_BOUND_META
 NOT_OPT_PARA=1;
