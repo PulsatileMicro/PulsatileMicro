@@ -1,4 +1,5 @@
 clear;clc;close all;warning off;dbstop if error;
+% dbstop in AdapObjFunc at 259 if isnan(Ed); 
 %% 计时开始
 SimulateInitT = clock;
 %% 微循环模型程序主函数

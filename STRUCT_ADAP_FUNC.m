@@ -8,7 +8,7 @@ global Net_546_ID Net_546_Meas_ID Egg_818_ID Net_122_ID Net_389_ID Net_913_ID Eg
 %% 1. 设置自适应方法、优化方法、优化类型
 AdapType=WITH_WALL;
 OptCategory=PSO;
-OptMethod=QPSO;
+OptMethod=SELPSO;
 OptType=OPT_PARA;
 
 %% 2. 数据预处理
@@ -143,7 +143,7 @@ if OptType==OPT_PARA
                 case QPSO
                     AdaptTimes = 500;
                     [X,FVAL] = QuaPSO(@(x) AdapObjFunc(x,NetTypeID,AdapType,HdOrder,...
-                        AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray),SwarmSize,InitSwarm,AdaptTimes,lb,ub);
+                        AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray),SwarmSize,InitSwarm,AdaptTimes,length(AdapCoeff),lb,ub);
                     NewAdapCoeff=X;
             end  
         case SIMPLEX

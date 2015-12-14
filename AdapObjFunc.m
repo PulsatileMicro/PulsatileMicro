@@ -219,7 +219,7 @@ while Loop2_Cnt<Loop2_Adap_Limit % 循环2，自适应循环迭代
         break;
       end
       % 输出显示
-      fprintf('AdapIt:=%d DiamMAE=%5.4e dDm:%5.4e dAw=%5.4e ViscIt:%3d.\n',Loop2_Cnt,1,mean(abs(dDm)),mean(abs(dAw)),Loop1_Cnt);
+%       fprintf('AdapIt:=%d DiamMAE=%5.4e dDm:%5.4e dAw=%5.4e ViscIt:%3d.\n',Loop2_Cnt,1,mean(abs(dDm)),mean(abs(dAw)),Loop1_Cnt);
     case {WITHOUT_WALL,WITHOUT_WALL_Cx}
       % AdapLoopOutType:0-正常；1-收敛；2-达到步长未收敛；3-visc错误；4-线性方程错误
       % AccuracyType（精度控制）：0-最大管径绝对误差；1-最大管径相对误差；2-平均管径绝对误差；3-平均管径相对误差
