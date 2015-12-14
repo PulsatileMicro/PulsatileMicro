@@ -1,4 +1,4 @@
-function [xm,fv] = QuaPSO(fitness,N,swarms,M,lb,ub)
+function [xm,fv] = QuaPSO(fitness,N,swarms,M,D,lb,ub)
 %QPSO Summary of this function goes here
 %   Detailed explanation goes here
 alpha = 0.5; %扩张系数beita参数
@@ -43,23 +43,23 @@ for t=1:M
     mbest=mean(p);
     beita=(1-alpha)*(M-t+1)/M+alpha;
     for i=1:N
-        rng('shuffle');
-        fy=rand;
-        x(i,:)=fy.*x(i,:)+(1-fy).*pg;
-        rng('shuffle');
-        fy=rand;
-        if rand < 0.5
-            x(i,:) = p(i,:)+beita.*abs(mbest - x(i,:)).*log(1/fy);
-        else
-            x(i,:) = p(i,:)-beita.*abs(mbest - x(i,:)).*log(1/fy);
-        end
         %   x(i,:)=arrayfun(@x_bounds_mutaion,x(i,:),lb,ub);
-        for d=1:size(x(i,:))
-            if x(i,d)<lb(d)
-                x(i,d)=lb(d)+0.8*rand()*(ub(d)-lb(d));
-            elseif x(i,d)>ub(d)
-                x(i,d)=ub(d)-0.8*rand()*(ub(d)-lb(d));
+        for d=1:D
+            rng('shuffle');
+            fy=rand;
+            p(i,d)=fy*p(i,d)+(1-fy)*pg(d);
+%             rng('shuffle');
+            fy=rand;
+            if rand < 0.5
+                x(i,d) = p(i,d)+beita*abs(mbest(d) - x(i,d))*log(1/fy);
+            else
+                x(i,d) = p(i,d)-beita*abs(mbest(d) - x(i,d))*log(1/fy);
             end
+%             if x(i,d)<lb(d)
+%                 x(i,d)=lb(d)+0.8*rand*(ub(d)-lb(d));
+%             elseif x(i,d)>ub(d)
+%                 x(i,d)=ub(d)-0.8*rand*(ub(d)-lb(d));
+%             end
         end
         fpgtemp = fitness(x(i,:));
         if fpgtemp < fp(i)
