@@ -45,11 +45,11 @@ for t=1:M
 
         v(i,:)=w*v(i,:)+c1*rand*(y(i,:)-x(i,:))+c2*rand*(pg-x(i,:));
        %% test v bounds
-        v(i,:)=arrayfun(@v_bounds_mutaion,v(i,:),vb);
-        disp(['第',num2str(t),'-',num2str(i),'次迭代约束步长为',num2str(v(i,:))]);
+%         v(i,:)=arrayfun(@v_bounds_mutaion,v(i,:),vb);
+        %disp(['第',num2str(t),'-',num2str(i),'次迭代约束步长为',num2str(v(i,:))]);
         %%test the lower and uper bounds
         x(i,:)=x(i,:)+v(i,:);
-        x(i,:)=arrayfun(@x_bounds_mutaion,x(i,:),lb,ub);
+%         x(i,:)=arrayfun(@x_bounds_mutaion,x(i,:),lb,ub);
         fx(i) = fitness(x(i,:));
 
         if fx(i)<p(i)
