@@ -124,12 +124,13 @@ PSO=1;
 SIMPLEX=2;
 GA=3;
 %%%% 结构自适应优化方法: OptMethod
-global PSORESV DOWNHILL GLOBAL_SEARCH YSPSO SELPSO
+global PSORESV DOWNHILL GLOBAL_SEARCH YSPSO SELPSO QPSO
 PSORESV=1;              % Matlab自带粒子群优化方法
 DOWNHILL=2;         % Simplex Downhill方法(matlab fminsearch函数)
 GLOBAL_SEARCH=3;
 YSPSO=4;
 SELPSO=5;
+QPSO=6;
 %%%% 优化类型：是否估算系数？:OptType
 global NOT_OPT_PARA OPT_PARA OPT_BOUND_FLOW OPT_BOUND_META
 NOT_OPT_PARA=1;

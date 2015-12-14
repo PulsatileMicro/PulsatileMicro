@@ -1,14 +1,14 @@
 function [NewAdapCoeff,ObjValue,OptDiam,OptWallTh,PO2,MeanP,tau,O,Visc,Sm,Sc] = STRUCT_ADAP_FUNC(NetTypeID,DataArray,Boundary,FuncPara,DatMatrix)
 global WITH_WALL WITHOUT_WALL WITH_WALL_Cx WITHOUT_WALL_Cx WITH_WALL_Cx_PULSE
 global PSO SIMPLEX GA
-global PSORESV DOWNHILL GLOBAL_SEARCH YSPSO SELPSO
+global PSORESV DOWNHILL GLOBAL_SEARCH YSPSO SELPSO QPSO
 global NOT_OPT_PARA OPT_PARA
 global Net_546_ID Net_546_Meas_ID Egg_818_ID Net_122_ID Net_389_ID Net_913_ID Egg_CAM_ID Sub_CAM_ID Egg_636_ID
 
 %% 1. 设置自适应方法、优化方法、优化类型
 AdapType=WITH_WALL;
 OptCategory=PSO;
-OptMethod=SELPSO;
+OptMethod=QPSO;
 OptType=OPT_PARA;
 
 %% 2. 数据预处理
@@ -139,6 +139,11 @@ if OptType==OPT_PARA
                     AdaptTimes = 500;
                     [X,FVAL] = SelPSO(@(x) AdapObjFunc(x,NetTypeID,AdapType,HdOrder,...
                         AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray),SwarmSize,InitSwarm,c1,c2,w,AdaptTimes,length(AdapCoeff),lb,ub);
+                    NewAdapCoeff=X;
+                case QPSO
+                    AdaptTimes = 500;
+                    [X,FVAL] = QuaPSO(@(x) AdapObjFunc(x,NetTypeID,AdapType,HdOrder,...
+                        AdapBoundary,AdapPara,Boundary,DatMatrix,DataArray),SwarmSize,InitSwarm,AdaptTimes,lb,ub);
                     NewAdapCoeff=X;
             end  
         case SIMPLEX
